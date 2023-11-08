@@ -1,0 +1,79 @@
+<!--
+
+stepper.html - Copyright 2023 Harshad Joshi and Bufferstack.IO Analytics Technology LLP, Pune.
+
+Licensed under the GNU General Public License, Version 3.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.gnu.org/licenses/gpl-3.0.html
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('stepper', {
+        category: 'Bufferstack.IO',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: "" },
+            from: { value: 0, validate: RED.validators.number() },
+            to: { value: 100, validate: RED.validators.number() },
+            step: { value: 1, validate: RED.validators.number() },
+            duration: { value: 1000, validate: RED.validators.number() }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "timer.png",
+        label: function() {
+            return this.name || "stepper";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            // Code to run when the edit dialog is opened
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="stepper">
+    <div class="form-row">
+        <label for="node-input-from"><i class="icon-tag"></i> From</label>
+        <input type="number" id="node-input-from" placeholder="0">
+    </div>
+    <div class="form-row">
+        <label for="node-input-to"><i class="icon-tag"></i> To</label>
+        <input type="number" id="node-input-to" placeholder="100">
+    </div>
+    <div class="form-row">
+        <label for="node-input-step"><i class="icon-tag"></i> Step</label>
+        <input type="number" id="node-input-step" placeholder="1">
+    </div>
+    <div class="form-row">
+        <label for="node-input-duration"><i class="icon-tag"></i> Duration (ms)</label>
+        <input type="number" id="node-input-duration" placeholder="1000">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Stepper">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="stepper">
+    <p>A stepper node that outputs numeric values from a start value to an end value at configurable intervals.</p>
+    <p>The node steps through a range of numbers defined by 'From' and 'To', incrementing or decrementing by 'Step'. The duration between each step is set by 'Duration' in milliseconds.</p>
+    <p>Messages with a boolean <code>true</code> payload and the following topics can control the stepper:</p>
+    <ul>
+        <li><code>"start"</code> - begins the stepping process</li>
+        <li><code>"stop"</code> - stops the stepping process</li>
+        <li><code>"reset"</code> - resets the stepper to the 'From' value and stops stepping</li>
+    </ul>
+    <p>It's important to configure the 'From', 'To', 'Step', and 'Duration' fields properly to ensure the node operates as expected.</p>
+</script>
+
