@@ -27,21 +27,28 @@ module.exports = function(RED) {
         node.duration = Number(config.duration);
         node.currentValue = node.from;
         var intervalId = null;
+        var isPaused = false;
+        var pausedValue = null;
 
         function startStepping() {
             if (intervalId !== null) {
                 clearInterval(intervalId); // Ensure no intervals are already running
             }
-            node.currentValue = node.from; // Reset to the starting value
+            if (isPaused && pausedValue !== null) {
+                node.currentValue = pausedValue;
+                isPaused = false;
+            }
             intervalId = setInterval(function() {
                 if ((node.from < node.to && node.currentValue >= node.to) ||
                     (node.from > node.to && node.currentValue <= node.to)) {
                     clearInterval(intervalId);
                     intervalId = null;
                     node.send({payload: node.currentValue});
+                    node.status({fill:"green", shape:"dot", text:"Stepping completed"});
                     return;
                 }
                 node.send({payload: node.currentValue});
+                node.status({fill:"blue", shape:"dot", text:"Stepping..."});
                 node.currentValue += (node.from < node.to) ? node.step : -node.step;
             }, node.duration);
         }
@@ -50,6 +57,9 @@ module.exports = function(RED) {
             if (intervalId !== null) {
                 clearInterval(intervalId);
                 intervalId = null;
+                pausedValue = node.currentValue;
+                isPaused = true;
+                node.status({fill:"red", shape:"ring", text:"Stepping paused"});
             }
         }
 
@@ -57,6 +67,7 @@ module.exports = function(RED) {
             stopStepping(); // Stop any existing stepping process
             node.currentValue = node.from; // Reset the current value
             node.send({payload: node.currentValue, topic: "reset"});
+            node.status({}); // Clear status ideally should be orange 
         }
 
         node.on('input', function(msg) {
@@ -71,8 +82,11 @@ module.exports = function(RED) {
                     case "reset":
                         resetStepping();
                         break;
+                    case "resume":
+                        startStepping(); // Resume stepping
+                        break;
                     default:
-                        node.warn("Received unknown topic or incorrect payload. Expected topics: start, stop, reset.");
+                        node.warn("Received unknown topic or incorrect payload. Expected topics: start, stop, reset, resume.");
                         break;
                 }
             } else {
@@ -83,6 +97,9 @@ module.exports = function(RED) {
         node.on('close', function() {
             stopStepping(); // Clear interval on node redeployment or shutdown
         });
+
+        // Initial status
+        node.status({fill:"blue", shape:"dot", text:"Ready"});
     }
     RED.nodes.registerType("stepper", StepperNode);
 }
