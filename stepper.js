@@ -66,7 +66,6 @@ module.exports = function(RED) {
         function resetStepping() {
             stopStepping(); // Stop any existing stepping process
             node.currentValue = node.from; // Reset the current value
-            node.send({payload: node.currentValue, topic: "reset"});
             node.status({}); // Clear status ideally should be orange 
         }
 
