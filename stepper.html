@@ -18,7 +18,7 @@ limitations under the License.
 
 <script type="text/javascript">
     RED.nodes.registerType('stepper', {
-        category: 'Bufferstack.IO',
+        category: 'function',
         color: '#a6bbcf',
         defaults: {
             name: { value: "" },
@@ -44,6 +44,10 @@ limitations under the License.
 
 <script type="text/html" data-template-name="stepper">
     <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Stepper">
+    </div>
+    <div class="form-row">
         <label for="node-input-from"><i class="icon-tag"></i> From</label>
         <input type="number" id="node-input-from" placeholder="0">
     </div>
@@ -60,8 +64,9 @@ limitations under the License.
         <input type="number" id="node-input-duration" placeholder="1000">
     </div>
     <div class="form-row">
-        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
-        <input type="text" id="node-input-name" placeholder="Stepper">
+        <label for="node-input-name"><i class="icon-tag"></i>Auto reset</label>
+        <input type="checkbox" id="node-input-auto-reset" />
+
     </div>
 </script>
 
@@ -70,9 +75,10 @@ limitations under the License.
     <p>The node steps through a range of numbers defined by 'From' and 'To', incrementing or decrementing by 'Step'. The duration between each step is set by 'Duration' in milliseconds.</p>
     <p>Messages with a boolean <code>true</code> payload and the following topics can control the stepper:</p>
     <ul>
-        <li><code>"start"</code> - begins the stepping process</li>
-        <li><code>"stop"</code> - stops the stepping process</li>
-        <li><code>"reset"</code> - resets the stepper to the 'From' value and stops stepping</li>
+        <li><code>"msg.start"</code> - begins the stepping process</li>
+        <li><code>"msg.stop"</code> - stops the stepping process</li>
+        <li><code>"msg.reset"</code> - resets the stepper to the 'From' value and stops stepping</li>
+        <li><code>"msg.resume"</code> - resumes the stepping process until the 'To'</li>
     </ul>
     <p>It's important to configure the 'From', 'To', 'Step', and 'Duration' fields properly to ensure the node operates as expected.</p>
 </script>
