@@ -73,7 +73,6 @@ limitations under the License.
 <script type="text/html" data-help-name="stepper">
     <p>A stepper node that outputs numeric values from a start value to an end value at configurable intervals.</p>
     <p>The node steps through a range of numbers defined by 'From' and 'To', incrementing or decrementing by 'Step'. The duration between each step is set by 'Duration' in milliseconds.</p>
-    <p>Messages with a boolean <code>true</code> payload and the following topics can control the stepper:</p>
     <ul>
         <li><code>"msg.payload"</code> - with any value triggers the stepping process</li>
         <li><code>"msg.stop"</code> - stops the stepping process</li>
